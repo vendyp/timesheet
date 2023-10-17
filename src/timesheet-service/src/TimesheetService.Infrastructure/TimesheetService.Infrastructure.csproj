@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TimesheetService.Core\TimesheetService.Core.csproj" />
+        <ProjectReference Include="..\TimesheetService.Persistence.SqlServer\TimesheetService.Persistence.SqlServer.csproj" />
+        <ProjectReference Include="..\Shared\TimesheetService.Shared.Infrastructure\TimesheetService.Shared.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.17.0" />
+    </ItemGroup>
+</Project>
