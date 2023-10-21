@@ -6,7 +6,7 @@ using TimesheetService.Shared.Abstractions.Databases;
 using TimesheetService.Shared.Abstractions.Encryption;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 using TimesheetService.Persistence.SqlServer;
 using Xunit.Abstractions;
 
@@ -14,17 +14,12 @@ namespace TimesheetService.IntegrationTests;
 
 public abstract class BaseServiceFixture : IAsyncLifetime
 {
-    protected readonly PostgreSqlContainer DbContainer;
-    protected Microsoft.Extensions.DependencyInjection.ServiceCollection Services { get; set; } = null!;
+    protected readonly MsSqlContainer DbContainer;
+    protected Microsoft.Extensions.DependencyInjection.ServiceCollection Services { get; set; }
 
     protected BaseServiceFixture(string name)
     {
-        DbContainer = new PostgreSqlBuilder()
-            .WithDatabase($"{name}db")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .Build();
-
+        DbContainer = new MsSqlBuilder().Build();
         Services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
     }
 
@@ -32,32 +27,32 @@ public abstract class BaseServiceFixture : IAsyncLifetime
     {
         await DbContainer.StartAsync();
 
+        var conn = DbContainer.GetConnectionString();
+
         Services.AddDefaultInjectedServices();
         Services.AddDbContext<SqlServerDbContext>(x =>
-            x.UseNpgsql(DbContainer.GetConnectionString())
+            x.UseSqlServer(conn)
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         Services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
 
         var provider = Services.BuildServiceProvider();
 
-        using (var scope = provider.CreateScope())
+        using var scope = provider.CreateScope();
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<SqlServerDbContext>();
+        await dbContext.Database.MigrateAsync();
+        var rng = scope.ServiceProvider.GetRequiredService<IRng>();
+        var salter = scope.ServiceProvider.GetRequiredService<ISalter>();
+        var clock = scope.ServiceProvider.GetRequiredService<IClock>();
+        dbContext.Insert(new Role
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<SqlServerDbContext>();
-            await dbContext.Database.EnsureCreatedAsync();
-            await dbContext.Database.MigrateAsync();
-            var rng = scope.ServiceProvider.GetRequiredService<IRng>();
-            var salter = scope.ServiceProvider.GetRequiredService<ISalter>();
-            var clock = scope.ServiceProvider.GetRequiredService<IClock>();
-            dbContext.Insert(new Role
-            {
-                RoleId = RoleExtensions.SuperAdministratorId,
-                Name = RoleExtensions.SuperAdministratorName,
-                Code = RoleExtensions.Slug(RoleExtensions.SuperAdministratorId, RoleExtensions.SuperAdministratorName),
-                Description = "Master role"
-            });
-            dbContext.Insert(DefaultUser.SuperAdministrator(rng, salter, clock));
-            await dbContext.SaveChangesAsync();
-        }
+            RoleId = RoleExtensions.SuperAdministratorId,
+            Name = RoleExtensions.SuperAdministratorName,
+            Code = RoleExtensions.Slug(RoleExtensions.SuperAdministratorId, RoleExtensions.SuperAdministratorName),
+            Description = "Master role"
+        });
+        dbContext.Insert(DefaultUser.SuperAdministrator(rng, salter, clock));
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DisposeAsync()

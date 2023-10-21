@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Testcontainers.PostgreSql;
+using Testcontainers.MsSql;
 using TimesheetService.Persistence.SqlServer;
 using Xunit.Abstractions;
 
@@ -16,12 +16,7 @@ namespace TimesheetService.FunctionalTests;
 
 public class CustomWebApplicationFactory : WebApplicationFactory<ApiMarker>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _dbContainer =
-        new PostgreSqlBuilder()
-            .WithDatabase("functionaltestdb")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .Build();
+    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder().Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -41,7 +36,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<ApiMarker>, IAs
             services.RemoveAll<SqlServerDbContext>();
 
             services.AddDbContext<SqlServerDbContext>(x =>
-                x.UseNpgsql(_dbContainer.GetConnectionString())
+                x.UseSqlServer(_dbContainer.GetConnectionString())
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<SqlServerDbContext>());
         });
