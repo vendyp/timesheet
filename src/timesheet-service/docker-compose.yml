@@ -3,8 +3,8 @@
 version: '3.4'
 
 services:
-  rl-api-template:
-    image: rl-api-template
+  timesheet-service:
+    image: timesheet-service
     build:
       context: .
       dockerfile: Dockerfile
