@@ -28,6 +28,7 @@ public static class ServiceCollection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IFileRepositoryService, FileRepositoryService>();
+        services.AddScoped<ITimesheetService, Services.TimesheetService>();
         services.AddSingleton<ISalter, Salter>();
 
         services.AddSqlServerDbContext(configuration, "sqlserver");

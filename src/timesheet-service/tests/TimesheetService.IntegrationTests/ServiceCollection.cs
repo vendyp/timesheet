@@ -31,6 +31,7 @@ public static class ServiceCollection
         services.AddEncryption();
         services.AddSingleton(new ClockOptions());
         services.AddScoped<IFileRepositoryService, FileRepositoryService>();
+        services.AddScoped<ITimesheetService, Infrastructure.Services.TimesheetService>();
     }
 
     public static void EnsureDbCreated<T>(this IServiceCollection services) where T : DbContext
