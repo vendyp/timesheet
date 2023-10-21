@@ -14,14 +14,8 @@ namespace TimesheetService.IntegrationTests;
 
 public abstract class BaseServiceFixture : IAsyncLifetime
 {
-    protected readonly MsSqlContainer DbContainer;
-    protected Microsoft.Extensions.DependencyInjection.ServiceCollection Services { get; set; }
-
-    protected BaseServiceFixture(string name)
-    {
-        DbContainer = new MsSqlBuilder().Build();
-        Services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
-    }
+    protected readonly MsSqlContainer DbContainer = new MsSqlBuilder().Build();
+    protected Microsoft.Extensions.DependencyInjection.ServiceCollection Services { get; } = new();
 
     public async Task InitializeAsync()
     {

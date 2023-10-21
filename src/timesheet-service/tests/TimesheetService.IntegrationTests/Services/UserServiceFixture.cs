@@ -12,7 +12,7 @@ namespace TimesheetService.IntegrationTests.Services;
 [CollectionDefinition(nameof(UserServiceFixture))]
 public class UserServiceFixture : BaseServiceFixture, ICollectionFixture<UserServiceFixture>
 {
-    public UserServiceFixture() : base(nameof(UserServiceFixture))
+    public UserServiceFixture() : base()
     {
         ContextId = Guid.NewGuid();
         DataTests = new List<User>();

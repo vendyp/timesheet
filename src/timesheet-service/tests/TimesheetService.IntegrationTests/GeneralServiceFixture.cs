@@ -8,7 +8,7 @@ namespace TimesheetService.IntegrationTests;
 [CollectionDefinition(nameof(GeneralServiceFixture))]
 public class GeneralServiceFixture : BaseServiceFixture, ICollectionFixture<GeneralServiceFixture>
 {
-    public GeneralServiceFixture() : base(nameof(GeneralServiceFixture))
+    public GeneralServiceFixture() : base()
     {
     }
 

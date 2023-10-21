@@ -7,7 +7,7 @@ namespace TimesheetService.IntegrationTests.Endpoints.Identity;
 
 public class RefreshTokenFixture : BaseServiceFixture
 {
-    public RefreshTokenFixture() : base(nameof(RefreshTokenFixture))
+    public RefreshTokenFixture() : base()
     {
     }
 
