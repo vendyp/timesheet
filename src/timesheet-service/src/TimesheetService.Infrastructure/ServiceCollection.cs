@@ -41,6 +41,7 @@ public static class ServiceCollection
         services.AddCors();
         services.AddCorsPolicy();
 
+        services.AddInitializer<AutoMigrationService>();
         services.AddInitializer<CoreInitializer>();
         services.AddApplicationInitializer();
     }
