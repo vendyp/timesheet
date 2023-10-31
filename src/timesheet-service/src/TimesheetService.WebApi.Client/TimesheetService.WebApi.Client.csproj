@@ -27,20 +27,4 @@
         <ProjectReference Include="..\TimesheetService.Infrastructure\TimesheetService.Infrastructure.csproj"/>
         <ProjectReference Include="..\TimesheetService.Persistence.SqlServer\TimesheetService.Persistence.SqlServer.csproj"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Controllers\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="Controllers\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Remove="Controllers\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="Controllers\**"/>
-    </ItemGroup>
 </Project>

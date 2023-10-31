@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetService.FunctionalTests", "tests\TimesheetService.FunctionalTests\TimesheetService.FunctionalTests.csproj", "{079B79A7-C537-4FC1-9A36-3F58AF02BA88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimesheetService.WebApi.Client", "src\TimesheetService.WebApi.Client\TimesheetService.WebApi.Client.csproj", "{0E6916C1-DED0-4C4E-A623-369846B80E7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{079B79A7-C537-4FC1-9A36-3F58AF02BA88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{079B79A7-C537-4FC1-9A36-3F58AF02BA88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{079B79A7-C537-4FC1-9A36-3F58AF02BA88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E6916C1-DED0-4C4E-A623-369846B80E7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6916C1-DED0-4C4E-A623-369846B80E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6916C1-DED0-4C4E-A623-369846B80E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6916C1-DED0-4C4E-A623-369846B80E7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{AC1C960B-1D0D-4E8F-8EB8-1D0AB9969014} = {CB97FBA7-07B2-4D30-8546-84F07778074D}
 		{7F19CF47-9DF8-4285-867B-5C5E487B134A} = {CB97FBA7-07B2-4D30-8546-84F07778074D}
 		{079B79A7-C537-4FC1-9A36-3F58AF02BA88} = {47C6EA51-77CB-4616-8511-B8E6966CFB4E}
+		{0E6916C1-DED0-4C4E-A623-369846B80E7F} = {EFC05560-E1F1-43C2-9E9E-235353983B2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21EF45DE-CFD2-4D70-A3B0-E62D99E0EE5B}
