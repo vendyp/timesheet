@@ -354,3 +354,7 @@ MigrationBackup/
 
 # Idea
 .vscode/
+
+# Others
+.github/docs/.$timesheet.drawio.bkp
+.github/docs/.$timesheet.drawio.dtmp
