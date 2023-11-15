@@ -38,7 +38,7 @@ internal sealed class RedisCache : ICache
         }
 
         var value = await _database.StringGetAsync(key);
-        return string.IsNullOrWhiteSpace(value) ? default : _jsonSerializer.Deserialize<T>(value);
+        return string.IsNullOrWhiteSpace(value) ? default : _jsonSerializer.Deserialize<T>(value!);
     }
 
     public async Task<IReadOnlyList<T>> GetManyAsync<T>(params string[] keys)
@@ -54,7 +54,7 @@ internal sealed class RedisCache : ICache
 
         values.AddRange(from redisValue in redisValues
             where redisValue.HasValue && !redisValue.IsNullOrEmpty
-            select _jsonSerializer.Deserialize<T>(redisValue));
+            select _jsonSerializer.Deserialize<T>(redisValue!)!);
 
         return values;
     }

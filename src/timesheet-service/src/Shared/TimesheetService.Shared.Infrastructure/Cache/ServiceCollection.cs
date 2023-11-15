@@ -15,7 +15,7 @@ public static class ServiceCollection
             o.Configuration = configuration.GetConnectionString(connectionStringName));
         services.TryAddScoped<ICache, RedisCache>();
         services.TryAddSingleton<IConnectionMultiplexer>(
-            ConnectionMultiplexer.Connect(configuration.GetConnectionString(connectionStringName)));
+            ConnectionMultiplexer.Connect(configuration.GetConnectionString(connectionStringName)!));
         services.TryAddScoped(ctx => ctx.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
     }
 
