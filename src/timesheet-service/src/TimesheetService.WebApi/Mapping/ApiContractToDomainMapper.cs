@@ -33,8 +33,8 @@ public static class ApiContractToDomainMapper
     {
         var role = new Role
         {
-            Name = request.Name!,
-            Description = request.Description,
+            Name = request.Name!.Trim(),
+            Description = request.Description?.Trim(),
         };
 
         role.Code = RoleExtensions.Slug(role.RoleId, role.Name);
@@ -43,7 +43,6 @@ public static class ApiContractToDomainMapper
             foreach (var item in request.Scopes)
                 role.RoleScopes.Add(new RoleScope
                 {
-                    RoleId = role.RoleId,
                     Name = item
                 });
 
