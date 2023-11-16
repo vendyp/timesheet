@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
 using TimesheetService.Domain.Entities;
-using TimesheetService.Domain.Extensions;
-using TimesheetService.WebApi.Scopes;
 
 namespace TimesheetService.WebApi.Endpoints.Identity.Helpers;
 
@@ -28,14 +26,6 @@ public static class ClaimsGenerator
 
         if (!string.IsNullOrWhiteSpace(user.Email))
             claims.Add(ClaimTypes.Email, new[] { user.Email });
-
-        //if normal
-        if (claims[ClaimTypes.Role].Any(e => e != RoleExtensions.SuperAdministratorId.ToString()))
-            return claims;
-
-        claims.Remove("scopes");
-
-        claims.Add("scopes", ScopeManager.Instance.GetAllScopes());
 
         return claims;
     }
