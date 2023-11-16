@@ -17,5 +17,8 @@ public class TimesheetConfiguration : BaseEntityConfiguration<Timesheet>
 
         builder.Property(e => e.TotalTime)
             .HasPrecision(18, 2);
+
+        builder.Property(e => e.RejectedMessage)
+            .HasMaxLength(512);
     }
 }
