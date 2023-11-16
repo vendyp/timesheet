@@ -54,12 +54,12 @@ public static class ApiContractToDomainMapper
     {
         var user = new User
         {
-            Username = request.Username!,
-            NormalizedUsername = request.Username!.ToUpper(),
+            Username = request.Username!.Trim(),
+            NormalizedUsername = request.Username!.Trim().ToUpper(),
             Salt = salt,
             Password = salter.Hash(salt, request.Password!),
-            LastPasswordChangeAt = DateTime.UtcNow,
-            FullName = request.Fullname
+            FullName = request.Fullname?.Trim(),
+            Email = request.EmailAddress?.Trim()
         };
 
         user.UserRoles.Add(
