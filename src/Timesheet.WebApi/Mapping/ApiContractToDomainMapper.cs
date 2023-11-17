@@ -52,14 +52,16 @@ public static class ApiContractToDomainMapper
 
     public static User ToUser(this CreateUserRequest request, string salt, ISalter salter)
     {
+        var usernameTrimmed = request.Username!.Trim();
+
         var user = new User
         {
-            Username = request.Username!,
-            NormalizedUsername = request.Username!.ToUpper(),
+            Username = usernameTrimmed,
+            NormalizedUsername = usernameTrimmed.ToUpper(),
             Salt = salt,
             Password = salter.Hash(salt, request.Password!),
-            LastPasswordChangeAt = DateTime.UtcNow,
-            FullName = request.Fullname
+            FullName = request.Fullname?.Trim(),
+            Email = request.EmailAddress?.Trim()
         };
 
         user.UserRoles.Add(

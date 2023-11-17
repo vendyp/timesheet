@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Meziantou.Extensions.Logging.Xunit" Version="1.0.7" />
         <PackageReference Include="Bogus" Version="34.0.2"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="MockQueryable.Core" Version="7.0.0"/>
