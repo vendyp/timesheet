@@ -10,7 +10,7 @@
       },
       "distributionName": ""
     },
-    "Timesheet": {
+    "WebApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
