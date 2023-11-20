@@ -34,8 +34,8 @@ public class EditRole : BaseEndpointWithoutResponse<EditRoleRequest>
     public override async Task<ActionResult> HandleAsync([FromRoute] EditRoleRequest request,
         CancellationToken cancellationToken = new())
     {
-        var validator = new EditRoleRequestPayloadValidator();
-        var validationResult = await validator.ValidateAsync(request.Payload, cancellationToken);
+        var validator = new EditRoleRequestValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return BadRequest(Error.Create("Invalid parameter", validationResult.Construct()));
 

@@ -1,5 +1,5 @@
-﻿using Timesheet.WebApi.Scopes;
-using FluentValidation;
+﻿using FluentValidation;
+using Timesheet.WebApi.Validators;
 
 namespace Timesheet.WebApi.Contracts.Requests;
 
@@ -7,14 +7,18 @@ public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>
 {
     public CreateRoleRequestValidator()
     {
-        RuleFor(e => e.Name).NotNull().NotEmpty().MaximumLength(256);
-        When(e => e.Scopes.Any(), () =>
-        {
-            RuleFor(e => e.Scopes).Must(e => e.Count == e.Distinct().Count());
+        RuleFor(e => e.Name).NotNull()
+            .NotEmpty()
+            .MaximumLength(256)
+            .SetValidator(new AsciiOnlyValidator());
 
-            var list = ScopeManager.Instance.GetAllScopes();
+        RuleFor(e => e.Description).MaximumLength(512)
+            .SetValidator(new AsciiOnlyValidator());
 
-            RuleForEach(e => e.Scopes).Must(e => list.Contains(e));
-        });
+        RuleFor(e => e.Scopes).NotNull().NotEmpty();
+
+        RuleForEach(e => e.Scopes)
+            .MaximumLength(100)
+            .Must(e => !string.IsNullOrWhiteSpace(e));
     }
 }

@@ -1,9 +1,7 @@
 ﻿using Bogus;
 using Timesheet.Domain.Entities;
-using Timesheet.Persistence.Postgres;
 using Timesheet.Shared.Abstractions.Databases;
 using Meziantou.Extensions.Logging.Xunit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;

@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using Timesheet.Shared.Infrastructure;
-using Timesheet.Shared.Abstractions.Cache;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization.Policy;
