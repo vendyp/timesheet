@@ -15,8 +15,7 @@ public class CreateRoleRequestValidator : AbstractValidator<CreateRoleRequest>
         RuleFor(e => e.Description).MaximumLength(512)
             .SetValidator(new AsciiOnlyValidator());
 
-        RuleFor(e => e.Scopes).NotNull().NotEmpty();
-
+        RuleFor(e => e.Scopes).NotNull();
         RuleForEach(e => e.Scopes)
             .MaximumLength(100)
             .Must(e => !string.IsNullOrWhiteSpace(e));

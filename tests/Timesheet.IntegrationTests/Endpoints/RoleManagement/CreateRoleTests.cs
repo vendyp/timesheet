@@ -4,6 +4,7 @@ using Timesheet.Shared.Abstractions.Databases;
 using Timesheet.WebApi.Contracts.Requests;
 using Timesheet.WebApi.Endpoints.RoleManagement;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
@@ -64,6 +65,15 @@ public class CreateRoleTests
 
         // Act
         var result = await createUser.HandleAsync(request, CancellationToken.None);
+
+        if (result is not NoContentResult)
+        {
+            var actual = result as BadRequestObjectResult;
+            var error = actual!.Value as Error;
+            _fixture.OutputHelper!.WriteLine(error!.Message);
+            foreach (var item in error.Payload!)
+                _fixture.OutputHelper.WriteLine(item.Message);
+        }
 
         // Assert the expected results
         result.ShouldNotBeNull();

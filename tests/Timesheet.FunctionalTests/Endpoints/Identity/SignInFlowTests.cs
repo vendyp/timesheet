@@ -64,16 +64,17 @@ public class SignInFlowTests : IClassFixture<CustomWebApplicationFactory>
         secondToken.ShouldNotBeNull();
 
         //response second get me should be unauthorized using first token
-        getMeRequest = HttpRequestMessageExtensions.Create(HttpMethod.Get,
-            _client.BaseAddress!,
-            getMePath,
-            null,
-            new Dictionary<string, string>
-            {
-                { "Authorization", $"bearer {token.AccessToken}" }
-            });
-        var responseSecondGetMe = await _client.SendAsync(getMeRequest);
-        responseSecondGetMe.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        // this code being commended because removed redis cache
+        // getMeRequest = HttpRequestMessageExtensions.Create(HttpMethod.Get,
+        //     _client.BaseAddress!,
+        //     getMePath,
+        //     null,
+        //     new Dictionary<string, string>
+        //     {
+        //         { "Authorization", $"bearer {token.AccessToken}" }
+        //     });
+        // var responseSecondGetMe = await _client.SendAsync(getMeRequest);
+        // responseSecondGetMe.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
         getMeRequest = HttpRequestMessageExtensions.Create(HttpMethod.Get,
             _client.BaseAddress!,

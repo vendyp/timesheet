@@ -74,7 +74,8 @@ public class SignIn : BaseEndpoint<SignInRequest, LoginResponse>
 
         var claims = ClaimsGenerator.Generate(user);
 
-        var token = _authManager.CreateToken(newUserToken.UserTokenId.ToString("N"), _authManager.Options.Audience);
+        var token = _authManager.CreateToken(newUserToken.UserTokenId.ToString("N"), _authManager.Options.Audience,
+            claims);
 
         var dto = new LoginResponse(user)
         {
