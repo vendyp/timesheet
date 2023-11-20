@@ -16,6 +16,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore .\TimesheetAll.sln
+      run: dotnet restore TimesheetAll.sln
     - name: Build
-      run: dotnet build .\TimesheetAll.sln --no-restore /warnaserror
+      run: dotnet build TimesheetAll.sln --no-restore /warnaserror
