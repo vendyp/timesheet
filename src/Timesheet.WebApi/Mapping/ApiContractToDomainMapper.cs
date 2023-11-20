@@ -39,8 +39,8 @@ public static class ApiContractToDomainMapper
 
         role.Code = RoleExtensions.Slug(role.RoleId, role.Name);
 
-        if (request.Scopes.Any())
-            foreach (var item in request.Scopes)
+        if (request.Scopes!.Any())
+            foreach (var item in request.Scopes!)
                 role.RoleScopes.Add(new RoleScope
                 {
                     RoleId = role.RoleId,

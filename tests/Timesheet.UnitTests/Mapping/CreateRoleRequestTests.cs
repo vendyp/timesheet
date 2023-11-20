@@ -14,7 +14,7 @@ public class CreateRoleRequestTests
             Name = "Dolor Ipsum",
             Description = "Desc"
         };
-        request.Scopes.Add("user.scope");
+        request.Scopes!.Add("user.scope");
 
         var expectedResult = new Role
         {
