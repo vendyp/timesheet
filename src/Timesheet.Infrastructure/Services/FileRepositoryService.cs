@@ -1,4 +1,5 @@
-﻿using Timesheet.Core.Abstractions;
+﻿using System.Linq.Expressions;
+using Timesheet.Core.Abstractions;
 using Timesheet.Domain.Entities;
 using Timesheet.Shared.Abstractions.Databases;
 using Microsoft.EntityFrameworkCore;
@@ -18,31 +19,27 @@ public class FileRepositoryService : IFileRepositoryService
         _dbContext.Set<FileRepository>()
             .AsQueryable();
 
-    public Task<FileRepository?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<FileRepository?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => GetBaseQuery()
             .Where(e => e.FileRepositoryId == id)
             .FirstOrDefaultAsync(cancellationToken);
 
-    public Task<List<FileRepository>> GetAllAsync(CancellationToken cancellationToken)
-        => GetBaseQuery()
-            .ToListAsync(cancellationToken);
-
-    public async Task<FileRepository?> CreateAsync(FileRepository entity, CancellationToken cancellationToken)
+    public async Task<FileRepository?> CreateAsync(FileRepository entity, CancellationToken cancellationToken = default)
     {
-        _dbContext.Insert(entity);
+        await _dbContext.InsertAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _dbContext.Set<FileRepository>()
-            .Select(e => new FileRepository
+        var entity = await GetByExpressionAsync(
+            e => e.FileRepositoryId == id,
+            e => new FileRepository
             {
                 FileRepositoryId = e.FileRepositoryId
-            })
-            .Where(e => e.FileRepositoryId == id)
-            .FirstOrDefaultAsync(cancellationToken);
+            }, cancellationToken);
+
         if (entity is null)
             throw new Exception("Data not found");
 
@@ -53,12 +50,21 @@ public class FileRepositoryService : IFileRepositoryService
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<long> TotalUsedStorageAsync(CancellationToken cancellationToken)
+    public Task<FileRepository?> GetByExpressionAsync(Expression<Func<FileRepository, bool>> predicate,
+        Expression<Func<FileRepository, FileRepository>> projection,
+        CancellationToken cancellationToken = default)
+        => GetBaseQuery()
+            .Where(predicate)
+            .Select(projection)
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public Task<long> TotalUsedStorageAsync(CancellationToken cancellationToken = default)
         => GetBaseQuery()
             .Where(e => e.IsFileDeleted == false)
             .SumAsync(e => e.Size, cancellationToken);
 
-    public Task<FileRepository?> GetByUniqueFileNameAsync(string fileName, CancellationToken cancellationToken)
+    public Task<FileRepository?> GetByUniqueFileNameAsync(string fileName,
+        CancellationToken cancellationToken = default)
         => GetBaseQuery()
             .Where(e => e.UniqueFileName == fileName)
             .FirstOrDefaultAsync(cancellationToken);

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Timesheet.Core.Abstractions;
 using Timesheet.Domain.Entities;
 using Timesheet.Shared.Abstractions.Databases;
@@ -30,20 +31,19 @@ public class RoleService : IRoleService
 
     public async Task<Role?> CreateAsync(Role entity, CancellationToken cancellationToken)
     {
-        _dbContext.Insert(entity);
+        await _dbContext.InsertAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var role = await _dbContext.Set<Role>()
-            .Select(e => new Role
+        var role = await GetByExpressionAsync(
+            e => e.RoleId == id,
+            e => new Role
             {
                 RoleId = e.RoleId
-            })
-            .Where(e => e.RoleId == id)
-            .FirstOrDefaultAsync(cancellationToken);
+            }, cancellationToken);
         if (role is null)
             throw new Exception("Data role not found");
 
@@ -53,4 +53,17 @@ public class RoleService : IRoleService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public Task<Role?> GetByExpressionAsync(Expression<Func<Role, bool>> predicate,
+        Expression<Func<Role, Role>> projection,
+        CancellationToken cancellationToken = default)
+        => GetBaseQuery()
+            .Where(predicate)
+            .Select(projection)
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public Task<Role?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
+        => GetBaseQuery()
+            .Where(e => e.Code == code)
+            .FirstOrDefaultAsync(cancellationToken);
 }

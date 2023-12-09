@@ -1,4 +1,5 @@
-﻿using Timesheet.Core.Abstractions;
+﻿using System.Linq.Expressions;
+using Timesheet.Core.Abstractions;
 using Timesheet.Domain.Entities;
 using Timesheet.Shared.Abstractions.Databases;
 using Timesheet.Shared.Abstractions.Encryption;
@@ -6,55 +7,67 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Timesheet.Infrastructure.Services;
 
-public class UserService : BaseEntityService<User>, IUserService
+public class UserService : IUserService
 {
+    private readonly IDbContext _dbContext;
     private readonly ISalter _salter;
 
-    public UserService(IDbContext dbContext, ISalter salter) : base(dbContext)
+    public UserService(IDbContext dbContext, ISalter salter)
     {
+        _dbContext = dbContext;
         _salter = salter;
     }
 
-    public override IQueryable<User> GetBaseQuery()
-        => DbContext.Set<User>()
+    public IQueryable<User> GetBaseQuery()
+        => _dbContext.Set<User>()
             .Include(e => e.UserRoles)
             .ThenInclude(e => e.Role!.RoleScopes)
             .AsQueryable();
 
-    public override Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
+    public Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
         => GetBaseQuery()
             .Where(e => e.UserId == userId)
             .FirstOrDefaultAsync(cancellationToken);
 
-    public override Task<List<User>> GetAllAsync(CancellationToken cancellationToken)
-        => GetBaseQuery().ToListAsync(cancellationToken);
-
-    public override async Task<User?> CreateAsync(User entity, CancellationToken cancellationToken)
+    public async Task<User?> CreateAsync(User entity, CancellationToken cancellationToken = default)
     {
-        DbContext.Insert(entity);
-        await DbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.InsertAsync(entity, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public override async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var user = await GetByIdAsync(id, cancellationToken);
+        var user = await GetByExpressionAsync(
+            e => e.UserId == id,
+            e => new User
+            {
+                UserId = e.UserId
+            }, cancellationToken);
         if (user is null)
             throw new Exception("Data not found");
 
-        DbContext.AttachEntity(user);
+        _dbContext.AttachEntity(user);
 
         user.SetToDeleted();
 
-        await DbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
+    public Task<User?> GetByExpressionAsync(Expression<Func<User, bool>> predicate,
+        Expression<Func<User, User>> projection,
+        CancellationToken cancellationToken = default)
+        => GetBaseQuery()
+            .Where(predicate)
+            .Select(projection)
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
         => GetBaseQuery()
             .Where(e => e.NormalizedUsername == username.ToUpper())
             .FirstOrDefaultAsync(cancellationToken);
 
-    public Task<bool> IsUserExistAsync(string username, CancellationToken cancellationToken)
+    public Task<bool> IsUserExistAsync(string username, CancellationToken cancellationToken = default)
     {
         username = username.ToUpper();
 

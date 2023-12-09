@@ -20,7 +20,7 @@ public class AzureBlobService : IAzureBlobService
     }
 
     public async Task<AzureBlobUploadResponse> UploadAsync(Stream stream, string containerName, string fileName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         await CreateContainerIfNotExistsAsync(containerName, cancellationToken);
 
@@ -48,14 +48,15 @@ public class AzureBlobService : IAzureBlobService
         };
     }
 
-    private async Task CreateContainerIfNotExistsAsync(string containerName, CancellationToken cancellationToken)
+    private async Task CreateContainerIfNotExistsAsync(string containerName,
+        CancellationToken cancellationToken = default)
     {
         var blobContainer = _client.GetBlobContainerClient(containerName);
         await blobContainer.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<AzureBlobUriResponse> GenerateUriAsync(string containerName, string filename,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         await CreateContainerIfNotExistsAsync(containerName, cancellationToken);
 

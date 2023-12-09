@@ -29,6 +29,12 @@ public class PostgresDbContext : DbContext, IDbContext
         where TEntity : BaseEntity =>
         Set<TEntity>().Add(entity);
 
+    public async Task InsertAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+        where TEntity : BaseEntity
+    {
+        await Set<TEntity>().AddAsync(entity, cancellationToken);
+    }
+
     public void AttachEntity<TEntity>(TEntity entity)
         where TEntity : BaseEntity =>
         Attach(entity);
