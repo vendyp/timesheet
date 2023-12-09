@@ -2,18 +2,10 @@
 {
     internal sealed class CorsOptions
     {
-        public CorsOptions()
-        {
-            AllowedOrigins = new List<string>();
-            AllowedMethods = new List<string>();
-            AllowedHeaders = new List<string>();
-            ExposedHeaders = new List<string>();
-        }
-
         public bool AllowCredentials { get; set; }
-        public List<string> AllowedOrigins { get; }
-        public List<string> AllowedMethods { get; }
-        public List<string> AllowedHeaders { get; }
-        public List<string> ExposedHeaders { get; }
+        public List<string> AllowedOrigins { get; } = new();
+        public List<string> AllowedMethods { get; } = new();
+        public List<string> AllowedHeaders { get; } = new();
+        public List<string> ExposedHeaders { get; } = new();
     }
 }

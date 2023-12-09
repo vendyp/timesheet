@@ -1,5 +1,4 @@
-﻿using Timesheet.WebApi.Scopes;
-using Timesheet.WebApi.Validators;
+﻿using Timesheet.WebApi.Validators;
 using FluentValidation;
 
 namespace Timesheet.WebApi.Contracts.Requests;

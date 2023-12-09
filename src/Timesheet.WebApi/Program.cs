@@ -8,10 +8,8 @@ using Timesheet.WebApi.Common;
 using Timesheet.WebApi.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +21,12 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSwaggerGen2();
 builder.Services.AddAuth();
+builder.Services.AddGlobalExceptionHandler();
+builder.Services.AddCustomApiBehavior();
 
 //builder.Services.AddRedisCache(builder.Configuration);
 builder.Services.AddInternalMemoryCache();
 
-builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = false; });
 builder.Services.AddControllers(options =>
     {
         options.Conventions.Add(
@@ -54,13 +53,14 @@ var app = builder.Build();
 if (!app.Environment.IsProduction())
     app.UseSwaggerGenAndReDoc();
 
+app.UseExceptionHandler();
+app.UseMiddleware<MethodNotAllowedMiddleware>();
 app.UseMiddleware<PerformanceMiddleware>();
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All
 });
 app.UseCors("cors");
-app.UseCustomExceptionHandler();
 app.UseAuth();
 app.UseContext();
 app.UseLogging();

@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Timesheet.Shared.Abstractions.Models;
 
 namespace Timesheet.Shared.Infrastructure.Api;
 
 public static class ServiceCollection
 {
-    public const string DefaultName = "cors";
+    private const string DefaultName = "cors";
 
     public static void AddCorsPolicy(this IServiceCollection services)
     {
@@ -35,7 +38,7 @@ public static class ServiceCollection
                     corsBuilder.WithHeaders(allowedHeaders.ToArray())
                         .WithMethods(allowedMethods.ToArray())
                         .WithOrigins(origins.ToArray())
-                            .SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .WithExposedHeaders(exposedHeaders.ToArray());
                 });
             });
@@ -60,6 +63,27 @@ public static class ServiceCollection
         return ipAddress ?? string.Empty;
     }
 
-    public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
-        => builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
+    public static void AddCustomApiBehavior(this IServiceCollection services)
+    {
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                if (env.IsProduction())
+                    return new BadRequestObjectResult(Error.Create("Invalid parameter"));
+
+                return new BadRequestObjectResult(Error.Create("Invalid parameter",
+                    "To developer, please check your request, this error occur while construct model binding",
+                    400));
+            };
+        });
+    }
+
+    public static void AddGlobalExceptionHandler(this IServiceCollection services)
+    {
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+    }
 }
